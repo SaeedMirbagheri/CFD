@@ -1,4 +1,6 @@
 function [ I ] = Number_Teta( N,e1 )
+%%%%%Calling the point return function (0.25, 0.5, 0.75 and 1)
+
 I=zeros(1,4);
 
 for i=1:N

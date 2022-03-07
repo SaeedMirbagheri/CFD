@@ -3,16 +3,19 @@ clear;
 clear all;
 close all;
 disp('Programmer: Seyed Saeed Mirbagheri ( Student number: 400126116 ). ')
-Range=input('Choose one of two intervals:   1=[5 9 17 33 65]     2=[65 101 201 501 1001 ]');
+Range=input('Choose one of two intervals:   1=[5 9 17 33 65]     2=[65 129 257 513 1025]   3=[513 1025 2049 4097 8193]: ');
+%%%Domain segmentation
 if Range==1
 n=[5 9 17 33 65];
-else
-n=[65 101 201 501 1001];
+elseif Range==3
+n=[257 513 1025 2049 4097]; 
+else   
+n=[65 129 257 513 1025];
 end
 Length_n=length(n);
 L=1;
 delta_e=L./(n-1);
-
+%%%%%Define problem constants
 Bi=0.1;
 Ar=20;
 Meu=(Ar*Bi)^2;
@@ -21,6 +24,7 @@ I=1;
 AA=zeros(1,1);
 N=zeros(1,1);
 BB=zeros(1,1);
+%%%%%%% Formation of coefficient matrix (AA) and information vector (BB)
 
 for I=1:Length_n
 e=Vector_x(delta_e(I),L);
@@ -71,13 +75,14 @@ Teta3=A3\B3;
 Teta4=A4\B4;
 Teta5=A5\B5;
 
+%%%%%Call a function to divide the domain into different n
 e1=Vector_x(delta_e(1),L);
 e2=Vector_x(delta_e(2),L);
 e3=Vector_x(delta_e(3),L);
 e4=Vector_x(delta_e(4),L);
 e5=Vector_x(delta_e(5),L);
 
-
+%%%%Draw in ? the function e
 figure(1)
 scatter(e1,Teta1,'bo','linewidth',2)
 title('Draw the \theta variable according to position e for different intervals');
@@ -91,12 +96,14 @@ scatter(e4,Teta4,'gd','linewidth',2)
 scatter(e5,Teta5,'mx','linewidth',2)
 legend('n=65','n=101','n=201','n=501','n=1001')
 
+%%%%%Calling the point return function (0.25, 0.5, 0.75 and 1)
 n1=Number_Teta(N(1),e1);
 n2=Number_Teta(N(2),e2);
 n3=Number_Teta(N(3),e3);
 n4=Number_Teta(N(4),e4);
 n5=Number_Teta(N(5),e5);
 
+%%%%Calculate the relative error value
 error=zeros(1,1);
 for i=1
     for j=1:4
@@ -119,6 +126,7 @@ for i=4
     end
 end
 
+%%%%%Draw the relative error value in terms of H
 figure(2)
 loglog(delta_e(1:end-1),abs(error(:,1)),'bo','linewidth',2);
 title('Solution convergence');
@@ -131,6 +139,7 @@ loglog(delta_e(1:end-1),abs(error(:,3)),'k*','linewidth',2);
 loglog(delta_e(1:end-1),abs(error(:,4)),'gd','linewidth',2);
 legend('e=0.25','n=0.5','n=0.75','n=1')
 
+%%%%%%%%Error slope calculations
 R_e=zeros(1,1);
 R_delta_e=zeros(1,1);
 R_e_delta_e=zeros(1,1);
@@ -147,6 +156,7 @@ for i=1:3
     end
 end
 
+%%%%Draw the error slope in terms of h
 figure(3)
 plot(delta_e(1:end-2),abs( R_e_delta_e(:,1)),'b','linewidth',2);
 title('Error slope');
@@ -157,11 +167,10 @@ grid on
 plot(delta_e(1:end-2),abs( R_e_delta_e(:,2)),'r','linewidth',2);
 plot(delta_e(1:end-2),abs( R_e_delta_e(:,3)),'k','linewidth',2);
 plot(delta_e(1:end-2),abs( R_e_delta_e(:,4)),'g','linewidth',2);
-
 legend('e=0.25','n=0.5','n=0.75','n=1')
 
+%%%%Calculate the actual error
 figure(4)
-
 Teta_Real=(cosh(Meu*(1-e))+(Bi/Meu)*sinh(Meu*(1-e)))/(cosh(Meu)+(Bi/Meu)*sinh(Meu)); 
 Error_Real=Teta_Real-Teta5';
 plot(e,Error_Real,'r','linewidth',2)
