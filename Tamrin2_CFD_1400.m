@@ -19,7 +19,7 @@ Length_delta_Fo=length(delta_Fo);
 
 else 
 nwo=[0.45,0.225,0.1125,0.05625,0.028125];
-n=33;
+n=5;
 delta_e=L/(n-1);
 delta_Fo=nwo.*(delta_e^2);
 Length_n=length(delta_e);
@@ -36,15 +36,20 @@ Meu=(Ar*Bi)^2;
 Teta_infinite=0;
 Teta_zero=1;
 I=1;
-
-%%%%%%% Formation of coefficient matrix (AA) and information vector (BB)
+%%%%%%%solove with FTCS Method
 if method==1
 [Teta,N,NN]=FTCS(Bi,Ar,L  ,Fo_end , Teta_zero , Teta_infinite , Length_n ,Length_delta_Fo , delta_e , delta_Fo , Range ) ;
+
+%%%%%%%solove with CTCS Method
 elseif method==2
 [Teta,N,NN]=CTCS(Bi,Ar,L  ,Fo_end , Teta_zero , Teta_infinite , Length_n ,Length_delta_Fo , delta_e , delta_Fo , Range ) ;
+
+%%%%%%%solove with BTCS Method
 elseif method==3
 [Teta,N,NN]=BTCS(Bi,Ar, L , Fo_end , Teta_zero , Teta_infinite , Length_n ,Length_delta_Fo , delta_e , delta_Fo, Range ) ;
-elseif method==4  
+
+%%%%%%%solove with Crank_Nicholson Method
+else  
 [Teta,N,NN]=Crank_Nicholson(Bi,Ar, L , Fo_end , Teta_zero , Teta_infinite , Length_n,Length_delta_Fo , delta_e , delta_Fo,Range ) ;
 end
 
@@ -74,7 +79,6 @@ plot(e(4,1:N(4)),Teta(1:N(4),NN(4),4),'gd','linewidth',2)
 plot(e(5,1:N(5)),Teta(1:N(5),NN(5),5),'mx','linewidth',2)
 legend('n=5','n=9','n=17','n=33','n=65')
 
-%%%%%Calling the point return function (0.25, 0.5, 0.75 and 1)
 
 
 %%%%%Draw the relative error value in terms of H
@@ -92,6 +96,7 @@ legend('e=0.25','n=0.5','n=0.75','n=1')
 
 %%%%%%%%Error slope calculations
  R_e_delta_e=Error_Slope( error,delta_e );
+ 
 %%%%Draw the error slope in terms of h
 figure(3)
 plot(delta_e(1:end-2),abs( R_e_delta_e(:,1)),'b','linewidth',2);
@@ -115,7 +120,6 @@ e(i,1:N(i))=Vector_x(delta_e(i),L);
 end
 
 
-
 [error,nn]=Error(N,NN,Length_n,Length_delta_Fo,e,Teta,Range );
 %%%%Draw in \theta the function e
 figure(1)
@@ -132,9 +136,6 @@ plot(e(1,1:N(5)),Teta(1:N(5),NN(5),5),'mx','linewidth',2)
 legend('\nu=0.45' ,'\nu=0.225' ,'\nu=0.1125' ,'\nu=0.05625' ,'\nu=0.028125')
 
 
-%%%%%Calling the point return function (0.25, 0.5, 0.75 and 1)
-
-
 %%%%%Draw the relative error value in terms of H
 figure(2)
 loglog(delta_Fo(1:end-1),abs(error(:,1)),'b','linewidth',2);
@@ -148,5 +149,3 @@ loglog(delta_Fo(1:end-1),abs(error(:,3)),'k','linewidth',2);
 loglog(delta_Fo(1:end-1),abs(error(:,4)),'g','linewidth',2);
 legend('\nu=0.45' ,'\nu=0.225' ,'\nu=0.1125' ,'\nu=0.05625' )    
 end
-
-%%%%Calculate the actual error
